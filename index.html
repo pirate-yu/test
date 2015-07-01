@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>智硕资产管理</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/css.css">
+</head>
+<body>
+
+
+<div style="background-color:#292b33">
+	<div class="container row-module">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="boxchart" id="showChart">
+			<div id="htm" class="chart-content" style="">
+              <div class="zuobiao-x" style="bottom: 129px;">￥50K</div>
+               <div class="zuobiao-x" style="bottom: 261px;">￥100K</div>
+               <div class="zuobiao-x" style="bottom: 395px;">￥150K</div>
+              <div class="zuobiao-y" style="right: 50%;">10Y</div>
+              <div class="zuobiao-y" style="right: 0;">20Y</div>
+			</div>
+                  <div class="chart-table">
+                    <h3>四轮驱动</h3>
+                    <table>
+                      <tbody>
+                        <tr class="tcolor1 even">
+                          <td class="title">模型1</td>
+                          <td style="width:20%">+2.1%</td>
+                          <td id="s1" style="width:30%">+￥500</td>                       
+                        </tr>
+                        <tr class="tcolor2">
+                          <td class="title">模型2</td>
+                          <td>+1.0%</td>
+                          <td id="s2">+￥500</td>                       
+                        </tr>
+                        <tr class="tcolor3 even">
+                          <td class="title">模型3</td>
+                          <td>+1.4%</td>
+                          <td id="s3">+￥500</td>                       
+                        </tr>
+                        <tr class="tcolor4">
+                          <td class="title">模型4</td>
+                          <td>+0.6%</td>
+                          <td id="s4">+￥500</td>                       
+                        </tr>
+                        <tr>
+                          <td class="zongshu-name title">四轮驱动</td>
+                          <td class="zongshu">+5.1%</td>
+                          <td class="zongshu" id="s5">+￥500</td>                       
+                        </tr>
+                      </tbody>
+                    </table>
+                    
+                  </div>
+            
+		</div>	
+			</div>
+		</div>
+	</div>
+</div>
+	</div>
+</footer>
+<script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+
+		<script type="text/javascript">
+      function lirun(ben,silun){
+        var jidu=[];
+        jidu[0]=[];
+        for(var z=0; z<silun.length; z++){
+          jidu[0][z]=0;
+        }
+        for(var i=1; i<81; i++){
+          jidu[i]=[];
+          for(var x=0; x<silun.length; x++){
+            jidu[i][x]=Math.round((ben*silun[x])/4)+jidu[i-1][x];
+          };
+          if(i%4==0){
+          ben=ben*1.046;
+          }
+        }
+        return jidu;
+      }
+      var shuju=lirun(100000,[0.021,0.01,0.014,0.006,0.051]);
+      var histogram = {
+        Create:function(x,data,s1,s2,s3,s4,s5){ //创建单条柱状图
+          var me = document.createElement('div');
+          var box = document.createElement('div'); //柱状图内盒子
+          var aColor= ['#6bff84','#27ae60','#00ccff','#0099ff'];//颜色从上到下
+          for(var i=0;i<data[x].length-1;i++){ //创建单条柱状图中的小块
+            var oDiv = document.createElement('div');
+            oDiv.style.height = data[x][i]*0.00266+'px';
+            oDiv.style.backgroundColor = aColor[i];
+            box.appendChild(oDiv);	//写入单条柱状图盒子中
+          };
+          box.className = 'mebox';
+          me.appendChild(box);
+          me.style.left = x*12+'px';
+          me.className = 'A1'
+          me.x1 = data[x][0];
+          me.x2 = data[x][1];
+          me.x3 = data[x][2];
+          me.x4 = data[x][3];
+          me.x5 = data[x][4];
+          me.s1 = s1;
+          me.s2 = s2;
+          me.s3 = s3;
+          me.s4 = s4;
+          me.s5 = s5;
+          me.onmouseover = this.Play;  //鼠标移动到柱状图上。
+          me.onmouseout=function(ev){  //清除鼠标移出事件冒泡
+            oEvent=ev||event;
+            oEvent.cancelBubble = true;
+          };
+          return me;
+        },
+        Play:function(ev){
+          oEvent=ev||event;
+          for(var i=0;i<myChart.length;i++){
+            myChart[i].style.opacity='0.2';
+          }
+          this.style.opacity='1'
+          this.s1.innerHTML = '+￥ '+this.x1;
+          this.s2.innerHTML = '+￥ '+this.x2;
+          this.s3.innerHTML = '+￥ '+this.x3;
+          this.s4.innerHTML = '+￥ '+this.x4;
+          this.s5.innerHTML = '+￥ '+this.x5;
+          oEvent.cancelBubble = true;
+        }
+      };
+      var myChart=new Array();  //准备储存创建的柱状图数组           
+      function goChart(data){
+        var showChart = document.getElementById('showChart');
+        var htm = document.getElementById('htm');
+        var s1 = document.getElementById('s1');
+        var s2 = document.getElementById('s2');
+        var s3 = document.getElementById('s3');
+        var s4 = document.getElementById('s4');
+        var s5 = document.getElementById('s5');
+        var lin1 = document.createElement('div');
+        lin1.className = 'zuobiao';
+        lin1.style.bottom = 50000*0.00266+'px';
+        htm.appendChild(lin1);
+        var lin2 = document.createElement('div');
+        lin2.className = 'zuobiao';
+        lin2.style.bottom = 100000*0.00266+'px';
+        htm.appendChild(lin2);
+        var lin3 = document.createElement('div');
+        lin3.className = 'zuobiao';
+        lin3.style.bottom = 150000*0.00266+'px';
+        htm.appendChild(lin3);
+        for(var x=0; x<shuju.length; x++){   //循环把创建的柱状图写入数组；
+          myChart[x] = histogram.Create(x,data,s1,s2,s3,s4,s5);
+          htm.appendChild(myChart[x]);
+        };
+        showChart.addEventListener("mouseout", showEvent, false);  
+        function showEvent(){
+          for(var i=0;i<myChart.length;i++){
+            myChart[i].style.opacity='1';
+          };
+        };
+      };
+      goChart(shuju);
+    </script>
+</body>
+</html>
